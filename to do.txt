@@ -1,0 +1,8 @@
+Funciones necesarias
+1. Registros listo
+2. Catalogo filtrado listo
+3. Catalogo normal listo
+4. Libros populares
+5. Registrar Prestamo listo
+6. Registrar devolucion
+7. Informe periodico

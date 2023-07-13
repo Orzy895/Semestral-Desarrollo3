@@ -1,0 +1,12 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "uncanaccess2018\\commons-lang-2.6.jar",
+        "uncanaccess2018\\commons-logging-1.1.3.jar",
+        "uncanaccess2018\\hsqldb.jar",
+        "uncanaccess2018\\jackcess-2.1.11.jar",
+        "uncanaccess2018\\ucanaccess-4.0.4.jar"
+    ]
+}
