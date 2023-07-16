@@ -6,11 +6,25 @@ import paquete.*;
 public class App {
     public static void main(String[] args) throws Exception {
         LinkedList<Libro> libros;
+        LinkedList<String> librosPopu;
+        LinkedList<Usuario> usuarios;
         SimpleDateFormat formato = new SimpleDateFormat("dd, MMMM, yyyy");
         Conexion obj1 = new Conexion();
         Operaciones obj2 = new Operaciones();
         try {
-            obj2.registrar_prestamo(3, 2, obj1);
+            usuarios=obj2.usuariosPrestamos(obj1);
+            for(int i = 0; i <usuarios.size(); i++){
+            System.out.println((i+1)+".\nNombre :"+usuarios.get(i).getNombre()
+                                    +"\nApellido :"+usuarios.get(i).getApellido()
+                                    +"\nCantidad Prestamos: "+usuarios.get(i).getContador());
+            }
+            /*librosPopu=obj2.librosPopulares(obj1);
+            System.out.println("Libros populares:");
+            for(int i = 0; i <librosPopu.size(); i++){
+            System.out.println((i+1)+". "+librosPopu.get(i));
+            }
+            */
+            //obj2.registrar_prestamo(3, 2, obj1);
             /*
              * Catalogo Completo
               libros = obj2.catalogo_completo(obj1);

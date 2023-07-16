@@ -2,7 +2,15 @@ package paquete;
 
 public class Usuario {
     private String nombre, apellido, direccion, correo;
-    private int telefono, idUsuario;
+    private int telefono, idUsuario, contador;
+
+    public int getContador() {
+        return this.contador;
+    }
+
+    public void setContador(int contador) {
+        this.contador = contador;
+    }
 
     public String getNombre() {
         return this.nombre;

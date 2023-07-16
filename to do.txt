@@ -5,4 +5,4 @@ Funciones necesarias
 4. Libros populares
 5. Registrar Prestamo listo
 6. Registrar devolucion
-7. Informe periodico
+7. Informe periodico listo

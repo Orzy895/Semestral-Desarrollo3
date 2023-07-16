@@ -2,6 +2,8 @@ package paquete;
 
 import java.sql.*;
 import java.util.LinkedList;
+import java.sql.ResultSet;
+import javax.naming.spi.DirStateFactory.Result;
 import java.time.LocalDate;
 
 public class Operaciones {
@@ -99,12 +101,13 @@ public class Operaciones {
         Date fechaPrestamo = java.sql.Date.valueOf(LocalDate.now());
         Date fechaDevolucion = java.sql.Date.valueOf(LocalDate.now().plusDays(7));
         try {
-            String sql = "Insert into Prestamos(idLibros, idUsuarios, fechaPrestamo, fechaDevolucion) values(?,?,?,?)";
+            String sql = "Insert into Prestamos(idLibros, idUsuarios, fechaPrestamo, fechaDevolucion, Estado) values(?,?,?,?,?)";
             insert = cnn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             insert.setInt(1, idLibro);
             insert.setInt(2, idUsuario);
             insert.setDate(3, fechaPrestamo);
             insert.setDate(4, fechaDevolucion);
+            insert.setString(5, "No");
             insert.executeUpdate();
             String sql2 = "Update Libros set cantdisponible = cantdisponible - 1 where idLibro = ?";
             insert2 = cnn.prepareStatement(sql2);
@@ -114,6 +117,65 @@ public class Operaciones {
             idPrestamo.close();
             cnn.close();
         } catch (SQLException e) {
+            cnn.close();
+            throw new Exception(e);
+        }
+    }
+    public int cantPrestamo(Conexion obj1)throws Exception{
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        try {
+            String sql = "Select count(*) from Prestamos";
+            ResultSet prestamos = stmt.executeQuery(sql);
+            if(prestamos.next()){
+                int a = prestamos.getInt(1);
+                cnn.close();
+                return a;
+            }
+            else{
+                cnn.close();
+                return 0;
+            }
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception(e);
+        }
+    }
+    public LinkedList<String> librosPopulares(Conexion obj1)throws Exception{
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        LinkedList<String> libros = new LinkedList<String>();
+        try{
+            recordset = stmt.executeQuery("select l.titulo from Libros l join Prestamos p on l.idLibro = p.idLibros group by p.idLibros, l.titulo order by count(*) desc");
+            while(recordset.next()){
+                libros.add(recordset.getString("titulo"));
+            }
+            cnn.close();
+            return libros;
+        }catch(SQLException e){
+            cnn.close();
+            throw new Exception(e);
+        }
+    }
+    public LinkedList<Usuario> usuariosPrestamos(Conexion obj1)throws Exception{
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
+        try{
+            recordset = stmt.executeQuery("select u.nombre, u.apellido, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
+            while(recordset.next()){
+                Usuario item = new Usuario();
+                item.setNombre(recordset.getString("nombre"));
+                item.setApellido(recordset.getString("apellido"));
+                item.setContador(recordset.getInt("contador"));
+                usuarios.add(item);
+            }
+            cnn.close();
+            return usuarios;
+        }catch(SQLException e){
             cnn.close();
             throw new Exception(e);
         }
