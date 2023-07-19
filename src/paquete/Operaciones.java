@@ -101,7 +101,7 @@ public class Operaciones {
         Date fechaPrestamo = java.sql.Date.valueOf(LocalDate.now());
         Date fechaDevolucion = java.sql.Date.valueOf(LocalDate.now().plusDays(7));
         try {
-            String sql = "Insert into Prestamos(idLibros, idUsuarios, fechaPrestamo, fechaDevolucion, Estado) values(?,?,?,?,?)";
+            String sql = "Insert into Prestamos(idLibros, idUsuarios, fechaPrestamo, fechaDevolucion, Devuelto) values(?,?,?,?,?)";
             insert = cnn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             insert.setInt(1, idLibro);
             insert.setInt(2, idUsuario);
@@ -165,9 +165,10 @@ public class Operaciones {
         stmt = cnn.createStatement();
         LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
         try{
-            recordset = stmt.executeQuery("select u.nombre, u.apellido, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
+            recordset = stmt.executeQuery("select u.nombre, u.apellido, u.idUsuario, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
             while(recordset.next()){
                 Usuario item = new Usuario();
+                item.setIdUsuario(recordset.getInt("idUsuario"));
                 item.setNombre(recordset.getString("nombre"));
                 item.setApellido(recordset.getString("apellido"));
                 item.setContador(recordset.getInt("contador"));
@@ -178,6 +179,78 @@ public class Operaciones {
         }catch(SQLException e){
             cnn.close();
             throw new Exception(e);
+        }
+    }
+    public void registrar_devolucion(Conexion obj1, int idPrestamo, int idLibro)throws Exception{
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        PreparedStatement insert;
+        PreparedStatement insert2;
+        try {
+            String sql = "Update Prestamos set Devuelto = 'Si' where idPrestamo = ?";
+            insert = cnn.prepareStatement(sql);
+            insert.setInt(1, idPrestamo);
+            insert.executeUpdate();
+            String sql2 = "Update Libros set cantdisponible = cantdisponible + 1 where idLibro = ?";
+            insert2 = cnn.prepareStatement(sql2);
+            insert2.setInt(1, idLibro);
+            insert2.executeUpdate();
+            cnn.close();
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception(e);
+        }
+    }
+    public boolean devuelto_verificacion(Conexion obj1, int idPrestamo)throws Exception{
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        try {
+            String sql = "Select Devuelto from Prestamos where idPrestamo = ?";
+            PreparedStatement stmt = cnn.prepareStatement(sql);
+            stmt.setInt(1, idPrestamo);
+            recordset = stmt.executeQuery();
+            if(recordset.next()){
+                String devuelto = recordset.getString("Devuelto");
+                if(devuelto.equalsIgnoreCase("Si")){
+                    cnn.close();
+                    return true;
+                }
+                else{
+                    cnn.close();
+                    return false;
+                }
+            }
+            else{
+                cnn.close();
+                throw new Exception("No existe dicho prestamo");
+            }
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception(e);
+        }
+    }
+    public LinkedList<PrestamoUsuarioLibro>Prestamos(Conexion obj1) throws Exception {
+        Connection cnn = null;
+        LinkedList<PrestamoUsuarioLibro> lista_prestamo = new LinkedList<PrestamoUsuarioLibro>();
+        try {
+            cnn = obj1.conectar();
+            stmt = cnn.createStatement();
+            recordset = stmt.executeQuery("SELECT * from Prestamos p join Usuarios u on p.idUsuarios = u.idUsuario join Libros l on p.idLibros = l.idLibro");
+            while (recordset.next()) {
+                PrestamoUsuarioLibro item = new PrestamoUsuarioLibro();
+                item.setIdPrestamo(recordset.getInt("idPrestamo"));
+                item.setNombre(recordset.getString("nombre"));
+                item.setApellido(recordset.getString("apellido"));
+                item.setTitulo(recordset.getString("titulo"));
+                lista_prestamo.add(item);
+            }
+            cnn.close();
+            return lista_prestamo;
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception("Error en la consulta: " + e);
         }
     }
 }
