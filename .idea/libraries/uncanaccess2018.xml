@@ -1,12 +1,6 @@
 <component name="libraryTable">
   <library name="uncanaccess2018">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/uncanaccess2018/commons-logging-1.1.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/uncanaccess2018/jackcess-2.1.11.jar!/" />
-      <root url="jar://$PROJECT_DIR$/uncanaccess2018/ucanaccess-4.0.4.jar!/" />
-      <root url="jar://$PROJECT_DIR$/uncanaccess2018/commons-lang-2.6.jar!/" />
-      <root url="jar://$PROJECT_DIR$/uncanaccess2018/hsqldb.jar!/" />
-    </CLASSES>
+    <CLASSES />
     <JAVADOC />
     <SOURCES />
   </library>

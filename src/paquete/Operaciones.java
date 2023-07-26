@@ -3,13 +3,13 @@ package paquete;
 import java.sql.*;
 import java.util.LinkedList;
 import java.sql.ResultSet;
-import javax.naming.spi.DirStateFactory.Result;
 import java.time.LocalDate;
 
 public class Operaciones {
     private Statement stmt;
     private ResultSet recordset;
 
+    // Metodo para el catalogo
     public LinkedList<Libro> catalogo_completo(Conexion obj1) throws Exception {
         Connection cnn = null;
         LinkedList<Libro> lista_libro = new LinkedList<Libro>();
@@ -37,6 +37,30 @@ public class Operaciones {
         }
     }
 
+    // Metodo para
+    public LinkedList<Usuario> lista_usuarios(Conexion obj1) throws Exception {
+        Connection cnn = null;
+        LinkedList<Usuario> lista_usuario = new LinkedList<Usuario>();
+        try {
+            cnn = obj1.conectar();
+            stmt = cnn.createStatement();
+            recordset = stmt.executeQuery("SELECT * from Usuarios");
+            while (recordset.next()) {
+                Usuario item = new Usuario();
+                item.setIdUsuario(recordset.getInt("idUsuario"));
+                item.setNombre(recordset.getString("nombre"));
+                item.setApellido(recordset.getString("apellido"));
+                lista_usuario.add(item);
+            }
+            cnn.close();
+            return lista_usuario;
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception("Consulta usuario error");
+        }
+    }
+
+    // Metodo para catalogo filtrado(por interes)
     public LinkedList<Libro> libro_por_interes(String interes, Conexion obj1, String tipo_interes) throws Exception {
         Connection cnn = null;
         LinkedList<Libro> lista_libro = new LinkedList<Libro>();
@@ -58,8 +82,6 @@ public class Operaciones {
                 lista.setDisponible(recordset.getInt("cantdisponible"));
                 lista.setFechaPub(recordset.getDate("fechaPublicacion"));
                 lista_libro.add(lista);
-            } else {
-                System.out.println("no hay");
             }
             cnn.close();
             return lista_libro;
@@ -69,6 +91,7 @@ public class Operaciones {
         }
     }
 
+    // Metodo para registrar un nuevo usuario
     public void registro_usuario(String nombre, String apellido, String direccion, String telefono,
             String correo, Conexion obj1) throws Exception {
         Connection cnn = null;
@@ -92,7 +115,36 @@ public class Operaciones {
             throw new Exception(e);
         }
     }
-    public void registrar_prestamo(int idLibro, int idUsuario, Conexion obj1)throws Exception{
+
+    // Metodo para saber la disponibilidad de un libro
+    public boolean Disponible(int idLibro, Conexion obj1) throws Exception {
+        Connection cnn = null;
+        cnn = obj1.conectar();
+        stmt = cnn.createStatement();
+        try {
+            String sql = "SELECT cantdisponible FROM Libros WHERE idLibro = ?";
+            PreparedStatement stmt = cnn.prepareStatement(sql);
+            stmt.setInt(1, idLibro);
+            recordset = stmt.executeQuery();
+            if (recordset.next()) {
+                int a = recordset.getInt("cantdisponible");
+                if (a > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else{
+                return false;
+            }
+        } catch (SQLException e) {
+            cnn.close();
+            throw new Exception("Error en disponibilidad: " + e);
+        }
+    }
+
+    // Metodo para registrar prestamo
+    public void registrar_prestamo(int idLibro, int idUsuario, Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
@@ -118,22 +170,23 @@ public class Operaciones {
             cnn.close();
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("prestamo error");
         }
     }
-    public int cantPrestamo(Conexion obj1)throws Exception{
+
+    // Metodo para ver la cantidad de prestamos existentes
+    public int cantPrestamo(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         try {
             String sql = "Select count(*) from Prestamos";
             ResultSet prestamos = stmt.executeQuery(sql);
-            if(prestamos.next()){
+            if (prestamos.next()) {
                 int a = prestamos.getInt(1);
                 cnn.close();
                 return a;
-            }
-            else{
+            } else {
                 cnn.close();
                 return 0;
             }
@@ -142,31 +195,37 @@ public class Operaciones {
             throw new Exception(e);
         }
     }
-    public LinkedList<String> librosPopulares(Conexion obj1)throws Exception{
+
+    // Metodo para ver los libros más populares(más prestados)
+    public LinkedList<String> librosPopulares(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         LinkedList<String> libros = new LinkedList<String>();
-        try{
-            recordset = stmt.executeQuery("select l.titulo from Libros l join Prestamos p on l.idLibro = p.idLibros group by p.idLibros, l.titulo order by count(*) desc");
-            while(recordset.next()){
+        try {
+            recordset = stmt.executeQuery(
+                    "select l.titulo from Libros l join Prestamos p on l.idLibro = p.idLibros group by p.idLibros, l.titulo order by count(*) desc");
+            while (recordset.next()) {
                 libros.add(recordset.getString("titulo"));
             }
             cnn.close();
             return libros;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             cnn.close();
             throw new Exception(e);
         }
     }
-    public LinkedList<Usuario> usuariosPrestamos(Conexion obj1)throws Exception{
+
+    // Metodo para saber la cantidad de prestamos que tiene cada usuario
+    public LinkedList<Usuario> usuariosPrestamos(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
-        try{
-            recordset = stmt.executeQuery("select u.nombre, u.apellido, u.idUsuario, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
-            while(recordset.next()){
+        try {
+            recordset = stmt.executeQuery(
+                    "select u.nombre, u.apellido, u.idUsuario, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
+            while (recordset.next()) {
                 Usuario item = new Usuario();
                 item.setIdUsuario(recordset.getInt("idUsuario"));
                 item.setNombre(recordset.getString("nombre"));
@@ -176,12 +235,14 @@ public class Operaciones {
             }
             cnn.close();
             return usuarios;
-        }catch(SQLException e){
+        } catch (SQLException e) {
             cnn.close();
             throw new Exception(e);
         }
     }
-    public void registrar_devolucion(Conexion obj1, int idPrestamo, int idLibro)throws Exception{
+
+    // Metodo para registrar la devolucion de un prestamo
+    public void registrar_devolucion(Conexion obj1, int idPrestamo, int idLibro) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
@@ -202,7 +263,9 @@ public class Operaciones {
             throw new Exception(e);
         }
     }
-    public boolean devuelto_verificacion(Conexion obj1, int idPrestamo)throws Exception{
+
+    // Metodo para verificar la devolucion de un prestamo
+    public boolean devuelto_verificacion(Conexion obj1, int idPrestamo) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
@@ -211,18 +274,16 @@ public class Operaciones {
             PreparedStatement stmt = cnn.prepareStatement(sql);
             stmt.setInt(1, idPrestamo);
             recordset = stmt.executeQuery();
-            if(recordset.next()){
+            if (recordset.next()) {
                 String devuelto = recordset.getString("Devuelto");
-                if(devuelto.equalsIgnoreCase("Si")){
+                if (devuelto.equalsIgnoreCase("Si")) {
                     cnn.close();
                     return true;
-                }
-                else{
+                } else {
                     cnn.close();
                     return false;
                 }
-            }
-            else{
+            } else {
                 cnn.close();
                 throw new Exception("No existe dicho prestamo");
             }
@@ -231,13 +292,16 @@ public class Operaciones {
             throw new Exception(e);
         }
     }
-    public LinkedList<PrestamoUsuarioLibro>Prestamos(Conexion obj1) throws Exception {
+
+    // Metodo para ver los prestramos que no han sido devueltos
+    public LinkedList<PrestamoUsuarioLibro> Prestamos(Conexion obj1) throws Exception {
         Connection cnn = null;
         LinkedList<PrestamoUsuarioLibro> lista_prestamo = new LinkedList<PrestamoUsuarioLibro>();
         try {
             cnn = obj1.conectar();
             stmt = cnn.createStatement();
-            recordset = stmt.executeQuery("SELECT * from Prestamos p join Usuarios u on p.idUsuarios = u.idUsuario join Libros l on p.idLibros = l.idLibro");
+            recordset = stmt.executeQuery(
+                    "SELECT * from Prestamos p join Usuarios u on p.idUsuarios = u.idUsuario join Libros l on p.idLibros = l.idLibro where Devuelto = 'No'");
             while (recordset.next()) {
                 PrestamoUsuarioLibro item = new PrestamoUsuarioLibro();
                 item.setIdPrestamo(recordset.getInt("idPrestamo"));

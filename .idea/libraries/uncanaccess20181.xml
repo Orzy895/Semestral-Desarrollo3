@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="uncanaccess20181">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/uncanaccess2018" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/uncanaccess2018" recursive="false" />
+  </library>
+</component>
