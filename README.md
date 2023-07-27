@@ -1,21 +1,20 @@
-# Proyecto Semestral de Desarrollo de Software III
+# Proyecto de Gestión de Biblioteca en Java
 
-Este es un proyecto de gestión de biblioteca desarrollado en Java y utilizando Access como base de datos.
-Durante este curso, el/la instructor nos había prohibido la impresión dentro de los métodos y por ello la complejidad de la lectura del main.
+Este proyecto tiene como objetivo implementar una aplicación de gestión de biblioteca en Java, utilizando Access como base de datos.
 
-## Enunciado del Problema
+Durante el desarrollo de este proyecto, el instructor nos impuso una restricción que prohíbe la impresión dentro de los métodos. Aunque esto ha aumentado la complejidad de la lectura del código en el método `main`, se ha seguido esta restricción para mantener la calidad y claridad del código.
 
-El objetivo de este proyecto es crear una aplicación que permita gestionar una biblioteca de manera eficiente y brinde una experiencia intuitiva tanto para los usuarios como para los bibliotecarios. Entre las funcionalidades principales se encuentran:
+## Descripción
 
-- Registro de usuarios: Los usuarios podrán registrarse proporcionando su información personal, incluyendo nombre, apellido, dirección, número de teléfono y correo electrónico.
-- Catálogo de libros: Los usuarios podrán acceder al catálogo de la biblioteca y buscar libros por título, autor o género para verificar su disponibilidad.
-- Préstamos y devoluciones: Los bibliotecarios podrán registrar los préstamos y devoluciones de libros, especificando las fechas correspondientes.
-- Notificaciones (Se nos indicó que no se realizara esta función): El sistema enviará notificaciones a los usuarios sobre fechas de devolución próximas.
-- Informes periódicos: Se generarán informes periódicos que incluyan datos como la cantidad de préstamos realizados, los libros más populares y los usuarios con más préstamos.
+La aplicación permite a los usuarios registrarse en el sistema proporcionando su información personal, como nombre, apellido, dirección, número de teléfono y correo electrónico. Una vez registrados, los usuarios pueden acceder al catálogo de la biblioteca y buscar libros por título, autor o género, y verificar su disponibilidad.
 
-## Diseño de las tablas a utilizar
+Los bibliotecarios tienen acceso adicional para registrar préstamos y devoluciones de libros, manteniendo un registro actualizado de las fechas de retiro y devolución. Además, el sistema envía notificaciones a los usuarios recordando las fechas de devolución próximas (Se nos indicó que no se realizará el envio de notififaciones).
 
-El diseño de las tablas en la base de datos Access será el siguiente:
+La aplicación también es capaz de generar informes periódicos sobre el uso de la biblioteca, incluyendo la cantidad de préstamos realizados, los libros más populares y los usuarios con más préstamos.
+
+## Diseño de las tablas en la base de datos
+
+Para almacenar los datos, se ha utilizado una base de datos Access con el siguiente diseño de tablas:
 
 **Tabla "Libros":**
 - idLibro (clave primaria)
@@ -40,4 +39,3 @@ El diseño de las tablas en la base de datos Access será el siguiente:
 - idUsuario (clave externa hacia la tabla "Usuarios")
 - fechaPréstamo (fecha)
 - fechaDevolución (fecha)
-
