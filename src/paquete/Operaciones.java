@@ -9,7 +9,7 @@ public class Operaciones {
     private Statement stmt;
     private ResultSet recordset;
 
-    // Metodo para el catalogo
+    // Metodo para retornar el catalogo de libros con sus atributos
     public LinkedList<Libro> catalogo_completo(Conexion obj1) throws Exception {
         Connection cnn = null;
         LinkedList<Libro> lista_libro = new LinkedList<Libro>();
@@ -37,7 +37,7 @@ public class Operaciones {
         }
     }
 
-    // Metodo para
+    // Metodo para retornar una lista de todos los usuarios con su codigo, nombre y apellido
     public LinkedList<Usuario> lista_usuarios(Conexion obj1) throws Exception {
         Connection cnn = null;
         LinkedList<Usuario> lista_usuario = new LinkedList<Usuario>();
@@ -56,11 +56,11 @@ public class Operaciones {
             return lista_usuario;
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception("Consulta usuario error");
+            throw new Exception("Error en la consulta de usuarios: "+e);
         }
     }
 
-    // Metodo para catalogo filtrado(por interes)
+    // Metodo para retornar el catalogo de libros filtrado por un interes del usuario
     public LinkedList<Libro> libro_por_interes(String interes, Conexion obj1, String tipo_interes) throws Exception {
         Connection cnn = null;
         LinkedList<Libro> lista_libro = new LinkedList<Libro>();
@@ -87,11 +87,11 @@ public class Operaciones {
             return lista_libro;
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception("Error en la consulta: " + e);
+            throw new Exception("Error en la consulta de catalogo filtrado: " + e);
         }
     }
 
-    // Metodo para registrar un nuevo usuario
+    // Metodo para registrar un nuevo usuario en la base de datos
     public void registro_usuario(String nombre, String apellido, String direccion, String telefono,
             String correo, Conexion obj1) throws Exception {
         Connection cnn = null;
@@ -112,11 +112,11 @@ public class Operaciones {
             cnn.close();
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en el registro de usuario: "+e);
         }
     }
 
-    // Metodo para saber la disponibilidad de un libro
+    // Metodo para revisar la disponibilidad de un libro (retorna cierto o falso)
     public boolean Disponible(int idLibro, Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -139,11 +139,11 @@ public class Operaciones {
             }
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception("Error en disponibilidad: " + e);
+            throw new Exception("Error en la consulta de disponibilidad: " + e);
         }
     }
 
-    // Metodo para registrar prestamo
+    // Metodo para registrar prestamos de los usuarios en la base de datos
     public void registrar_prestamo(int idLibro, int idUsuario, Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -161,6 +161,7 @@ public class Operaciones {
             insert.setDate(4, fechaDevolucion);
             insert.setString(5, "No");
             insert.executeUpdate();
+            //Instruccion sql para actualizar la cantidad de libros disponibles (-1)
             String sql2 = "Update Libros set cantdisponible = cantdisponible - 1 where idLibro = ?";
             insert2 = cnn.prepareStatement(sql2);
             insert2.setInt(1, idLibro);
@@ -170,11 +171,11 @@ public class Operaciones {
             cnn.close();
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception("prestamo error");
+            throw new Exception("Error en el registro de prestamo: "+e);
         }
     }
 
-    // Metodo para ver la cantidad de prestamos existentes
+    // Metodo para revisar la cantidad de prestamos existentes
     public int cantPrestamo(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -192,11 +193,11 @@ public class Operaciones {
             }
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en la consulta de prestamos existentes: "+e);
         }
     }
 
-    // Metodo para ver los libros más populares(más prestados)
+    // Metodo para ver los libros más populares(más prestado, solo retorna el nombre del libro)
     public LinkedList<String> librosPopulares(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -212,11 +213,11 @@ public class Operaciones {
             return libros;
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en la consulta de libros populares: "+e);
         }
     }
 
-    // Metodo para saber la cantidad de prestamos que tiene cada usuario
+    // Metodo para obtener la cantidad de prestamos realizados que tiene cada usuario
     public LinkedList<Usuario> usuariosPrestamos(Conexion obj1) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -237,12 +238,12 @@ public class Operaciones {
             return usuarios;
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en la consulta de la cantidad de prestamos por usuarios= "+e);
         }
     }
 
     // Metodo para registrar la devolucion de un prestamo
-    public void registrar_devolucion(Conexion obj1, int idPrestamo, int idLibro) throws Exception {
+    public void registrar_devolucion(Conexion obj1, int idPrestamo, String titulo) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
@@ -253,18 +254,19 @@ public class Operaciones {
             insert = cnn.prepareStatement(sql);
             insert.setInt(1, idPrestamo);
             insert.executeUpdate();
-            String sql2 = "Update Libros set cantdisponible = cantdisponible + 1 where idLibro = ?";
+            //Instruccion sql para actualizar la cantidad de libros disponibles de un titulo(+1)
+            String sql2 = "Update Libros set cantdisponible = cantdisponible + 1 where titulo = ?";
             insert2 = cnn.prepareStatement(sql2);
-            insert2.setInt(1, idLibro);
+            insert2.setString(1, titulo);
             insert2.executeUpdate();
             cnn.close();
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en el registro de devolucion = "+e);
         }
     }
 
-    // Metodo para verificar la devolucion de un prestamo
+    // Metodo para verificar la si un libro ya ha sido devuelto
     public boolean devuelto_verificacion(Conexion obj1, int idPrestamo) throws Exception {
         Connection cnn = null;
         cnn = obj1.conectar();
@@ -289,11 +291,11 @@ public class Operaciones {
             }
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception(e);
+            throw new Exception("Error en la verififacion de prestamo = "+e);
         }
     }
 
-    // Metodo para ver los prestramos que no han sido devueltos
+    // Metodo que retorna los prestamos que no han sido devueltos
     public LinkedList<PrestamoUsuarioLibro> Prestamos(Conexion obj1) throws Exception {
         Connection cnn = null;
         LinkedList<PrestamoUsuarioLibro> lista_prestamo = new LinkedList<PrestamoUsuarioLibro>();
@@ -314,7 +316,7 @@ public class Operaciones {
             return lista_prestamo;
         } catch (SQLException e) {
             cnn.close();
-            throw new Exception("Error en la consulta: " + e);
+            throw new Exception("Error en la consulta de Prestamos: " + e);
         }
     }
 }

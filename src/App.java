@@ -6,7 +6,8 @@ import java.text.SimpleDateFormat;
 import paquete.*;
 
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        //Declaracion de variables a utilizar y objetos
         LinkedList<Libro> libros;
         LinkedList<String> librosPopu;
         LinkedList<Usuario> usuarios;
@@ -16,7 +17,7 @@ public class App {
         Conexion obj1 = new Conexion();
         Operaciones obj2 = new Operaciones();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int menuP = 0;
+        int menuP;
         boolean menuPT = true;
         do {
             try {
@@ -305,7 +306,7 @@ public class App {
                                     }
                                     System.out.print("Ingrese el ID del Libro: ");
                                     int idLibro = Integer.parseInt(br.readLine());
-                                    if (obj2.Disponible(idLibro, obj1) == true) {
+                                    if (obj2.Disponible(idLibro, obj1)) {
                                         System.out.println("Usuarios: ");
                                         usuarios = obj2.lista_usuarios(obj1);
                                         System.out.println("id\t\tUsuario");
@@ -336,26 +337,38 @@ public class App {
                                     System.out.println("Bienvenido al Sistema de Devolucion");
                                     System.out.println();
                                     prestamos = obj2.Prestamos(obj1);
-                                    System.out.println("id\tNombre\tTitulo");
+                                    System.out.println("id\tNombre\t\t\t\tTitulo");
                                     for (PrestamoUsuarioLibro prestamo : prestamos) {
                                         System.out.println(prestamo.getIdPrestamo() + "\t" + prestamo.getNombre() + " "
                                                 + prestamo.getApellido() + "\t" + prestamo.getTitulo());
                                     }
                                     System.out.print("Ingrese el ID del Prestamo: ");
                                     int idPrestamo = Integer.parseInt(br.readLine());
-                                    obj2.registrar_devolucion(obj1, idPrestamo, idPrestamo);
-                                    System.out.println("Registro de Devolucion Exitoso!");
-                                    System.out.println("-----------------------------------");
-                                    System.out.println("Introduzca cualquier tecla para continuar");
-                                    br.readLine();
+                                    String tituloLibroDevolucion = null;
+                                    for(PrestamoUsuarioLibro prestamo : prestamos){
+                                        if(prestamo.getIdPrestamo()==idPrestamo){
+                                            tituloLibroDevolucion = prestamo.getTitulo();
+                                        }
+                                    }
+                                    if(obj2.devuelto_verificacion(obj1, idPrestamo)){
+                                        System.out.println("Este prestamo ya ha sido devuelto");
+                                    }
+                                    else{
+                                        obj2.registrar_devolucion(obj1, idPrestamo,tituloLibroDevolucion);
+                                        System.out.println("Registro de Devolucion Exitoso!");
+                                        System.out.println("-----------------------------------");
+                                        System.out.println("Introduzca cualquier tecla para continuar");
+                                        br.readLine();
+                                    }
 
                                 } catch (Exception e) {
                                     System.out.println("Un Error ha Ocurrido en el Proceso del Registro de Prestamo: "
                                             + e.getMessage());
                                 }
                                 // Enviar notificaciones de devoluciones proximas a usuarios
+                                // Opcion no realizada
                             } else if (menuA == 3) {
-                                System.out.println("Se ha enviado las notificaciones");
+                                System.out.println("Se ha enviado las notificaciones de devoluciones proximas a los usuarios");
                                 System.out.println("Introduzca cualquier tecla para continuar");
                                 br.readLine();
 
@@ -406,11 +419,11 @@ public class App {
                         }
 
                     } while (menuA != 5);
-                    // Salida del menu principal
+                // Salida del menu principal
                 } else if (menuP == 3) {
                     System.out.println("¡Hasta luego!");
                     menuPT = false;
-                    //// Notificacion de error
+                //// Notificacion de error
                 } else {
                     System.out.println("Opcion invalida. Por favor, seleccione una opcion valida.");
                 }
