@@ -374,7 +374,7 @@ public class App {
 
                                 // Informe periodico
                             } else if (menuA == 4) {
-                                LinkedList<String> libroPopulares = new LinkedList<String>();
+                                LinkedList<String> libroPopulares;
                                 libroPopulares = obj2.librosPopulares(obj1);
                                 System.out.println("-------------------------------");
                                 System.out.println("Bienvenido al Informe Periodico");

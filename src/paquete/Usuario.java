@@ -1,8 +1,8 @@
 package paquete;
 
 public class Usuario {
-    private String nombre, apellido, direccion, correo;
-    private int telefono, idUsuario, contador;
+    private String nombre, apellido;
+    private int idUsuario, contador;
 
     public int getContador() {
         return this.contador;
@@ -26,30 +26,6 @@ public class Usuario {
 
     public void setApellido(String apellido) {
         this.apellido = apellido;
-    }
-
-    public String getDireccion() {
-        return this.direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getCorreo() {
-        return this.correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public int getTelefono() {
-        return this.telefono;
-    }
-
-    public void setTelefono(int telefono) {
-        this.telefono = telefono;
     }
 
     public int getIdUsuario() {

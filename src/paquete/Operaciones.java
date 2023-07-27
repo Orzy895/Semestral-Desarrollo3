@@ -12,7 +12,7 @@ public class Operaciones {
     // Metodo para retornar el catalogo de libros con sus atributos
     public LinkedList<Libro> catalogo_completo(Conexion obj1) throws Exception {
         Connection cnn = null;
-        LinkedList<Libro> lista_libro = new LinkedList<Libro>();
+        LinkedList<Libro> lista_libro = new LinkedList<>();
         try {
             cnn = obj1.conectar();
             stmt = cnn.createStatement();
@@ -40,7 +40,7 @@ public class Operaciones {
     // Metodo para retornar una lista de todos los usuarios con su codigo, nombre y apellido
     public LinkedList<Usuario> lista_usuarios(Conexion obj1) throws Exception {
         Connection cnn = null;
-        LinkedList<Usuario> lista_usuario = new LinkedList<Usuario>();
+        LinkedList<Usuario> lista_usuario = new LinkedList<>();
         try {
             cnn = obj1.conectar();
             stmt = cnn.createStatement();
@@ -63,7 +63,7 @@ public class Operaciones {
     // Metodo para retornar el catalogo de libros filtrado por un interes del usuario
     public LinkedList<Libro> libro_por_interes(String interes, Conexion obj1, String tipo_interes) throws Exception {
         Connection cnn = null;
-        LinkedList<Libro> lista_libro = new LinkedList<Libro>();
+        LinkedList<Libro> lista_libro = new LinkedList<>();
         try {
             cnn = obj1.conectar();
             stmt = cnn.createStatement();
@@ -94,7 +94,7 @@ public class Operaciones {
     // Metodo para registrar un nuevo usuario en la base de datos
     public void registro_usuario(String nombre, String apellido, String direccion, String telefono,
             String correo, Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         PreparedStatement insert;
@@ -118,7 +118,7 @@ public class Operaciones {
 
     // Metodo para revisar la disponibilidad de un libro (retorna cierto o falso)
     public boolean Disponible(int idLibro, Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         try {
@@ -128,11 +128,7 @@ public class Operaciones {
             recordset = stmt.executeQuery();
             if (recordset.next()) {
                 int a = recordset.getInt("cantdisponible");
-                if (a > 0) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return a > 0;
             }
             else{
                 return false;
@@ -145,7 +141,7 @@ public class Operaciones {
 
     // Metodo para registrar prestamos de los usuarios en la base de datos
     public void registrar_prestamo(int idLibro, int idUsuario, Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         PreparedStatement insert;
@@ -177,7 +173,7 @@ public class Operaciones {
 
     // Metodo para revisar la cantidad de prestamos existentes
     public int cantPrestamo(Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         try {
@@ -199,10 +195,10 @@ public class Operaciones {
 
     // Metodo para ver los libros más populares(más prestado, solo retorna el nombre del libro)
     public LinkedList<String> librosPopulares(Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
-        LinkedList<String> libros = new LinkedList<String>();
+        LinkedList<String> libros = new LinkedList<>();
         try {
             recordset = stmt.executeQuery(
                     "select l.titulo from Libros l join Prestamos p on l.idLibro = p.idLibros group by p.idLibros, l.titulo order by count(*) desc");
@@ -219,10 +215,10 @@ public class Operaciones {
 
     // Metodo para obtener la cantidad de prestamos realizados que tiene cada usuario
     public LinkedList<Usuario> usuariosPrestamos(Conexion obj1) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
-        LinkedList<Usuario> usuarios = new LinkedList<Usuario>();
+        LinkedList<Usuario> usuarios = new LinkedList<>();
         try {
             recordset = stmt.executeQuery(
                     "select u.nombre, u.apellido, u.idUsuario, count(p.idUsuarios) as contador from Usuarios u join Prestamos p on u.idUsuario = p.idUsuarios group by u.idUsuario, u.nombre, u.apellido order by contador desc");
@@ -244,7 +240,7 @@ public class Operaciones {
 
     // Metodo para registrar la devolucion de un prestamo
     public void registrar_devolucion(Conexion obj1, int idPrestamo, String titulo) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         PreparedStatement insert;
@@ -268,7 +264,7 @@ public class Operaciones {
 
     // Metodo para verificar la si un libro ya ha sido devuelto
     public boolean devuelto_verificacion(Conexion obj1, int idPrestamo) throws Exception {
-        Connection cnn = null;
+        Connection cnn;
         cnn = obj1.conectar();
         stmt = cnn.createStatement();
         try {
@@ -298,7 +294,7 @@ public class Operaciones {
     // Metodo que retorna los prestamos que no han sido devueltos
     public LinkedList<PrestamoUsuarioLibro> Prestamos(Conexion obj1) throws Exception {
         Connection cnn = null;
-        LinkedList<PrestamoUsuarioLibro> lista_prestamo = new LinkedList<PrestamoUsuarioLibro>();
+        LinkedList<PrestamoUsuarioLibro> lista_prestamo = new LinkedList<>();
         try {
             cnn = obj1.conectar();
             stmt = cnn.createStatement();
