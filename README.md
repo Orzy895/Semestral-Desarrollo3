@@ -1,36 +1,43 @@
-Proyecto Semestral de Desarrollo de Software III
+# Proyecto Semestral de Desarrollo de Software III
 
-Proyecto realizado usando Java y Access
+Este es un proyecto de gestión de biblioteca desarrollado en Java y utilizando Access como base de datos.
+Durante este curso, el/la instructor nos había prohibido la impresión dentro de los métodos y por ello la complejidad de la lectura del main.
 
-Enunciado del Problema:
+## Enunciado del Problema
 
-Se solicita el diseño y desarrollo de una aplicación de gestión de biblioteca que proporcione una interfaz intuitiva y amigable tanto para los usuarios como para los bibliotecarios. Además, se desea llevar un registro actualizado de los libros disponibles, así como de los préstamos realizados.
-Los usuarios de la biblioteca podrán registrarse en el sistema proporcionando su información personal, como nombre, apellido, dirección, número de teléfono y correo electrónico. Una vez registrados, podrán acceder al catálogo de la biblioteca y buscar libros de interés por título, autor o género, podrá verificar su disponibilidad.
-El sistema debe permitir a los bibliotecarios registrar los préstamos y devoluciones, especificando la fecha de retiro o devoluciones. Enviar notificaciones a los usuarios sobre fechas de devolución próximas.
-Además, se desea generar informes periódicos sobre el uso de la biblioteca, como la cantidad de préstamos realizados, los libros más populares y los usuarios con más préstamos.
+El objetivo de este proyecto es crear una aplicación que permita gestionar una biblioteca de manera eficiente y brinde una experiencia intuitiva tanto para los usuarios como para los bibliotecarios. Entre las funcionalidades principales se encuentran:
 
-Diseño de las tablas a utilizar:
+- Registro de usuarios: Los usuarios podrán registrarse proporcionando su información personal, incluyendo nombre, apellido, dirección, número de teléfono y correo electrónico.
+- Catálogo de libros: Los usuarios podrán acceder al catálogo de la biblioteca y buscar libros por título, autor o género para verificar su disponibilidad.
+- Préstamos y devoluciones: Los bibliotecarios podrán registrar los préstamos y devoluciones de libros, especificando las fechas correspondientes.
+- Notificaciones (Se nos indicó que no se realizara esta función): El sistema enviará notificaciones a los usuarios sobre fechas de devolución próximas.
+- Informes periódicos: Se generarán informes periódicos que incluyan datos como la cantidad de préstamos realizados, los libros más populares y los usuarios con más préstamos.
 
-Tabla "Libros":
-• idLibro (clave primaria)
-• título (texto)
-• autor (texto)
-• género (texto)
-• ISBN (texto)
-• fechaPublicación (fecha)
-• editorial (texto)
+## Diseño de las tablas a utilizar
 
-Tabla "Usuarios":
-• idUsuario (clave primaria)
-• nombre (texto)
-• apellido (texto)
-• dirección (texto)
-• teléfono (texto)
-• correoElectrónico (texto)
+El diseño de las tablas en la base de datos Access será el siguiente:
 
-Tabla "Préstamos":
-• idPréstamo (clave primaria)
-• idLibro (clave externa hacia la tabla "Libros")
-• idUsuario (clave externa hacia la tabla "Usuarios")
-• fechaPréstamo (fecha)
-• fechaDevolución (fecha)
+**Tabla "Libros":**
+- idLibro (clave primaria)
+- título (texto)
+- autor (texto)
+- género (texto)
+- ISBN (texto)
+- fechaPublicación (fecha)
+- editorial (texto)
+
+**Tabla "Usuarios":**
+- idUsuario (clave primaria)
+- nombre (texto)
+- apellido (texto)
+- dirección (texto)
+- teléfono (texto)
+- correoElectrónico (texto)
+
+**Tabla "Préstamos":**
+- idPréstamo (clave primaria)
+- idLibro (clave externa hacia la tabla "Libros")
+- idUsuario (clave externa hacia la tabla "Usuarios")
+- fechaPréstamo (fecha)
+- fechaDevolución (fecha)
+
