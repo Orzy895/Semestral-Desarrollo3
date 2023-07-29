@@ -2,7 +2,7 @@
 
 Este proyecto tiene como objetivo implementar una aplicación de gestión de biblioteca en Java, utilizando Access como base de datos.
 
-Durante el desarrollo de este proyecto, el instructor nos impuso una restricción que prohíbe la impresión dentro de los métodos. Aunque esto ha aumentado la complejidad de la lectura del código en el método `main`, se ha seguido esta restricción para mantener la calidad y claridad del código.
+Durante el desarrollo de este proyecto, el instructor nos impuso una restricción que prohíbe la impresión dentro de los métodos. Esto ha aumentado la complejidad de la lectura del código en el método `main`.
 
 ## Descripción
 
